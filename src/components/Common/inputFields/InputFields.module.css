@@ -1,0 +1,235 @@
+.input-field-container,
+.dropdown-field-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.input-field-container span {
+  font-style: italic;
+  font-weight: 300;
+  font-size: 12px;
+  line-height: 16px;
+  color: #000000;
+  margin: 1rem;
+}
+
+.input-field-container span a {
+  color: #000000;
+  text-decoration: none;
+  border-bottom: 1px solid #000000;
+}
+
+.inputBox {
+  background-color: inherit;
+  border: 1px solid var(--primary-blue);
+  border-radius: 4px;
+  max-width: 663px;
+  height: 40px;
+  margin: 0.6rem 0;
+  padding: 0 1rem;
+}
+
+.inputBox::placeholder,
+.textArea::placeholder {
+  font-style: italic;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.01em;
+  color: #8f8e8e;
+}
+
+.inputBox:has(~ .error) {
+  border-color: var(--secondary-pink);
+}
+
+.inputBox:disabled {
+  border-color: var(--primary-grey);
+}
+
+.upload-field-container {
+  width: 100%;
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  margin-bottom: 0.6rem;
+}
+
+.upload-field-container label {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 18px;
+}
+
+.upload-field-container p {
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  color: rgba(26, 42, 60, 0.45);
+}
+
+.error {
+  color: var(--secondary-pink);
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 18px;
+  text-transform: lowercase;
+  margin-bottom: 0.6rem;
+}
+
+.radio-field-container {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 18px;
+
+  margin-bottom: 0.6rem;
+}
+
+.radio-option-container {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.radio-label {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 21px;
+  padding: 10px 40px;
+}
+
+.select-label {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 18px;
+  padding: 5px;
+}
+
+.select-options-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-start;
+  margin-bottom: 0.6rem;
+}
+
+.radio-label,
+.select-label {
+  color: var(--primary-blue);
+
+  border: 1px solid var(--primary-blue);
+  border-radius: 4px;
+  cursor: pointer;
+
+  text-transform: uppercase;
+}
+
+.radio-label > input,
+.select-label > input {
+  display: none;
+}
+
+.radio-label:has(input:checked),
+.select-label:has(input:checked) {
+  background: var(--primary-blue);
+  color: var(--primary-btn-text);
+}
+
+.textArea {
+  border: 1px solid var(--primary-blue);
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  margin: 0.6rem 0;
+  background-color: inherit;
+  resize: none;
+  max-width: 663px;
+}
+
+.textArea:has(+ .error) {
+  border-color: var(--secondary-pink);
+}
+
+/* .dropdown-field-container select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url(../../../Assets/images/drop-down-closed.svg);
+  background-repeat: no-repeat;
+  background-position: right;
+} */
+
+.time-field {
+  display: flex;
+  width: inherit;
+}
+
+.time-field input.inputBox {
+  width: inherit;
+}
+
+/* Styling for autoCompleteField */
+.input-field-container:has(.auto-options-container) {
+  position: relative;
+}
+
+.input-field-container .auto-options-container {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  margin-top: 4.5rem;
+  width: 100%;
+  height: max-content;
+  max-height: 240px;
+  overflow: auto;
+  z-index: 2;
+  background-color: var(--primary-white);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+.autoComplete-label {
+  padding: 0.5rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.autoComplete-label:hover {
+  background-color: var(--primary-blue);
+  color: var(--primary-btn-text);
+}
+
+.autoComplete-label > input {
+  display: none;
+}
+
+@media screen and (max-width: 600px) {
+  .upload-field-container {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 0;
+  }
+  .upload-field-container button {
+    margin-left: 0;
+  }
+
+  .radio-field-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media screen and (min-width: 640px) {
+  .input-field-container:has(.time-field) {
+    width: auto;
+  }
+  .time-field input.inputBox {
+    width: 7rem;
+  }
+}

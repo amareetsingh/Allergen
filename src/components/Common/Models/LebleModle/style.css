@@ -1,0 +1,5 @@
+.custom-dialog {
+    width: 90vw;   /* Occupy the 90% of the screen width */
+    max-width: 90vw;
+    height: 90vh;
+} 
