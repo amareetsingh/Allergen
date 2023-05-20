@@ -1,7 +1,7 @@
-import React,{forwardRef} from "react";
+import React, { forwardRef } from "react";
 
 const InputField = forwardRef((props, ref) => {
-  const {label, type, defaultValue, onChange, disabled} = props;
+  const { label, type, value, defaultValue, onChange, disabled } = props;
   return (
     <div>
       {label && <label className="form-label">{label}</label>}
@@ -12,6 +12,7 @@ const InputField = forwardRef((props, ref) => {
         onChange={onChange}
         ref={ref}
         disabled={disabled}
+        value={value}
       />
     </div>
   );

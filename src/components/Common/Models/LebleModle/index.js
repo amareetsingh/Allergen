@@ -3,20 +3,45 @@ import { useSelector } from "react-redux";
 import Modal from "react-bootstrap/Modal";
 import Tabs from "./Tabs";
 import "./style.css";
+import NutritionalTable from './NutritionalTable'
 import html2pdf from "html2pdf.js";
-import html2canvas from 'html2canvas';
+import html2canvas from "html2canvas";
 // import html2canvas from 'html-to-image';
 // import LabelPreview from '../../../Preview/LabelPreview'
 const Index = ({ show, setShow }) => {
   const [pdfCall, setPdfCall] = useState(false);
   const { RecipeDetails } = useSelector((state) => state.totalRecipe);
   const containerRef = useRef(null);
-console.log('REICPE DETAILS', RecipeDetails)
+  const [isCheckedRadio, setIsCheckedRadio] = useState(false);
+  const [AnableTableCheckValue, setAngableTableCheckValue] = useState(false);
+  const [ReferenzmengeTableCheckbox, setReferenzmengeTableCheckbox ] = useState(false)
+  console.log('REICPE DETAILS', RecipeDetails)
+ 
+  const {
+    Recipe_name,
+    Kurze_bescheribung,
+    Beilagen,
+    Zu_input_value,
+    MindestensSelect,
+    Netto_value,
+    Netto_full_value,
+    Abtropfgewicht_value,
+    Fullgewicht_Value,
+    fischanggebiet_value,
+    Herkunfit_value,
+    Chargen_number_value,
+    PreisValue,
+    PriesProValue,
+    prepared_raw_value
+  } = useSelector((state) => state.Preview);
 
-  const { Recipe_name, Kurze_bescheribung, Beilagen } = useSelector(
-    (state) => state.Preview
-  );
-
+  const recipe = {
+    recipeItems:RecipeDetails["recipe-items"], 
+    totalWeight: RecipeDetails["total-weight"],
+    reductionFactor:RecipeDetails["reduction-factor"],
+    nutritionalType:prepared_raw_value ? prepared_raw_value :'raw'
+    // nutritionalType:'raw'
+  };
 
   // generate pdf
 
@@ -31,44 +56,53 @@ console.log('REICPE DETAILS', RecipeDetails)
     html2pdf().set(options).from(containerRef.current).save();
   };
 
-
-  // generate jpg 
+  // generate jpg
 
   function generateJPG() {
-
     const container = containerRef.current;
-  
-    // Increase the brightness of the container element
-    container.style.filter = 'brightness(150%)';
-  
-    html2canvas(container, { backgroundColor: null })
-      .then(function (canvas) {
-        const dataURL = canvas.toDataURL('image/jpeg', 1.0);
-        const link = document.createElement('a');
-        link.download = 'image.jpg';
-        link.href = dataURL;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        // Reset the brightness of the container element
-        container.style.filter = 'none';
-      });
-  }
 
+    // Increase the brightness of the container element
+    container.style.filter = "brightness(150%)";
+
+    html2canvas(container, { backgroundColor: null }).then(function (canvas) {
+      const dataURL = canvas.toDataURL("image/jpeg", 1.0);
+      const link = document.createElement("a");
+      link.download = "image.jpg";
+      link.href = dataURL;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Reset the brightness of the container element
+      container.style.filter = "none";
+    });
+  }
 
   function generatePNG() {
     const container = containerRef.current;
 
     html2canvas(container).then(function (canvas) {
-      const dataURL = canvas.toDataURL('image/png');
-      const link = document.createElement('a');
-      link.download = 'image.png';
+      const dataURL = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.download = "image.png";
       link.href = dataURL;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     });
+  }
+
+  const handleOptionChange = (event) => {
+    setIsCheckedRadio(event.target.value === "true");
+  };
+
+  const AngabeTableCheckbox = (e)=>{
+    const checked = e.target.checked;
+    setAngableTableCheckValue(checked);
+  }
+  const ReferenzmengeHandle = (e)=>{
+    const checked = e.target.checked;
+    setReferenzmengeTableCheckbox(checked);
   }
   return (
     <>
@@ -98,8 +132,18 @@ console.log('REICPE DETAILS', RecipeDetails)
               <div className="d-flex justify-content-between ">
                 <p>Druckberich</p>{" "}
                 <div className="d-flex gap-2">
-                  <button className="btn btn-success btn-sm " onClick={generatePNG}>PNG</button>
-                  <button className="btn btn-success btn-sm" onClick={generateJPG} >JPG</button>
+                  <button
+                    className="btn btn-success btn-sm "
+                    onClick={generatePNG}
+                  >
+                    PNG
+                  </button>
+                  <button
+                    className="btn btn-success btn-sm"
+                    onClick={generateJPG}
+                  >
+                    JPG
+                  </button>
                   <button
                     className="btn btn-success btn-sm "
                     onClick={generatePDF}
@@ -116,8 +160,9 @@ console.log('REICPE DETAILS', RecipeDetails)
                     className="form-check-input"
                     type="radio"
                     name="exampleRadios"
-                    id="exampleRadios1"
-                    value="option1"
+                    checked={isCheckedRadio === false}
+                    value="false"
+                    onChange={handleOptionChange}
                   />
                   <label className="form-check-label" for="exampleRadios1">
                     Vollstandiges lebensmitteletkett
@@ -128,8 +173,9 @@ console.log('REICPE DETAILS', RecipeDetails)
                     className="form-check-input"
                     type="radio"
                     name="exampleRadios"
-                    id="exampleRadios1"
-                    value="option1"
+                    checked={isCheckedRadio === true}
+                    value="true"
+                    onChange={handleOptionChange}
                   />
                   <label className="form-check-label" for="exampleRadios1">
                     nur Nahrwerttabelle
@@ -148,6 +194,8 @@ console.log('REICPE DETAILS', RecipeDetails)
                         className="form-check-input"
                         type="checkbox"
                         value=""
+                        onChange={AngabeTableCheckbox}
+
                       />
                       <label className="form-check-label">Angabe je</label>
                     </div>
@@ -156,6 +204,7 @@ console.log('REICPE DETAILS', RecipeDetails)
                         className="form-check-input"
                         type="checkbox"
                         value=""
+                        onChange={ReferenzmengeHandle}
                       />
                       <label className="form-check-label">
                         mit Referenzmenge
@@ -186,10 +235,11 @@ console.log('REICPE DETAILS', RecipeDetails)
                   </div>
                 </div>
                 <div className="lable_div " style={{ height: "450px" }}>
+                 
                   <div
                     ref={containerRef}
                     className="d-flex w-75 justify-content-center  flex-column mt-4"
-                    style={{  height: "auto" }}
+                    style={{ height: "auto" }}
                   >
                     <div className="d-flex justify-content-between w-75">
                       <div>
@@ -204,58 +254,116 @@ console.log('REICPE DETAILS', RecipeDetails)
                         {Beilagen && <p>{Beilagen}</p>}
                       </div>
                       <div>
+                        {Chargen_number_value.isChecked && (
+                          <p style={{ fontSize: "14px", lineHeight: "6px" }}>
+                            {Chargen_number_value.value}
+                          </p>
+                        )}
                         <h4>Rezeptrechner</h4>
                       </div>
                     </div>
-                    <div className="w-100 d-flex gap-4">
-                      <div
-                        className="border border-1"
-                        style={{ height: "200px", width: "300px" }}
-                      ></div>
-                      <div style={{ width: "200px" }}>
-                        <p style={{ fontSize: "8px", lineHeight: "14px" }}>
-                          Zutaten: Gaisburger Marsch (1), Hackbraten mit Soße
-                          (2), Joghurt natur (fettarm) (Milch), Tortellini (roh)
-                          (Gluten, Weizen, Eier), Sauerkirschen (im Glas), E-482
-                          Calciumstearoyl-2-lactylat, DRM, A/B teting2333 -
-                          (Nutella, Apples, Mehl) (Roggen, Gerste, mit
-                          Geschmacksverstärker, mit Farbstoff,
-                          Mehlbehandlungsmittel), Feldsalat, A test for the
-                          searching (Roggen, Hafer, mit Antioxidationsmittel,
-                          Säuerungsmittel), Fenchelsamen
-                        </p>
-                        <div
-                          className="border border-1 text-center p-1"
-                          style={{ fontSize: "10px" }}
-                        >
-                          ZU VERBRAUCHEN BIS: 05.01.2023
+                    {isCheckedRadio == true ? (
+                      <div className="w-100 d-flex gap-4">
+                      <NutritionalTable recipe={recipe} AnableTableCheckValue={AnableTableCheckValue} ReferenzmengeTableCheckbox={ReferenzmengeTableCheckbox} />
+                      </div>
+                    ) : (
+                      <div className="w-100 d-flex gap-4">
+                        <div style={{ height: "200px", width: "300px" }}>
+                        <NutritionalTable recipe={recipe} AnableTableCheckValue={AnableTableCheckValue} ReferenzmengeTableCheckbox={ReferenzmengeTableCheckbox} />
                         </div>
-                        <div className="mt-3">
-                          <p style={{ fontSize: "10px", lineHeight: "6px" }}>
-                            Netto Gewicht : 2250,0g
+                        <div style={{ width: "200px" }}>
+                          <p style={{ fontSize: "8px", lineHeight: "14px" }}>
+                            Zutaten: Gaisburger Marsch (1), Hackbraten mit Soße
+                            (2), Joghurt natur (fettarm) (Milch), Tortellini
+                            (roh) (Gluten, Weizen, Eier), Sauerkirschen (im
+                            Glas), E-482 Calciumstearoyl-2-lactylat, DRM, A/B
+                            teting2333 - (Nutella, Apples, Mehl) (Roggen,
+                            Gerste, mit Geschmacksverstärker, mit Farbstoff,
+                            Mehlbehandlungsmittel), Feldsalat, A test for the
+                            searching (Roggen, Hafer, mit Antioxidationsmittel,
+                            Säuerungsmittel), Fenchelsamen
                           </p>
-                          <p style={{ fontSize: "10px", lineHeight: "6px" }}>
-                            Alkohol: 0,0% Vol.
-                          </p>
-                          <p style={{ fontSize: "10px", lineHeight: "6px" }}>
-                            ggggggggggggggg
-                          </p>
-                          <p style={{ fontSize: "10px", lineHeight: "6px" }}>
-                            Fischfanggebiet:
-                          </p>
-                        </div>
-                        <div>
-                          <div style={{ float: "right" }}>
-                            <p style={{ fontSize: "10px", lineHeight: "6px" }}>
-                              Preis:23.00E
-                            </p>
-                            <p style={{ fontSize: "10px", lineHeight: "6px" }}>
-                              Preis pro 100g :4400 chf
-                            </p>
+                          {Zu_input_value.isChecked && (
+                            <div
+                              className="border border-1 text-center p-1"
+                              style={{ fontSize: "10px" }}
+                            >
+                              {MindestensSelect} {Zu_input_value.value}
+                            </div>
+                          )}
+                          <div className="mt-3">
+                            {Netto_value.isChecked && (
+                              <p
+                                style={{ fontSize: "10px", lineHeight: "6px" }}
+                              >
+                                Netto Gewicht : {Netto_value.value}
+                              </p>
+                            )}
+                            {Abtropfgewicht_value.isChecked && (
+                              <p
+                                style={{ fontSize: "10px", lineHeight: "6px" }}
+                              >
+                                Abtropfgewicht :{Abtropfgewicht_value.value}
+                              </p>
+                            )}
+                            {Fullgewicht_Value.isChecked && (
+                              <p
+                                style={{ fontSize: "10px", lineHeight: "6px" }}
+                              >
+                                Füllgewicht :{Fullgewicht_Value.value}
+                              </p>
+                            )}
+                            {Netto_full_value.isChecked && (
+                              <p
+                                style={{ fontSize: "10px", lineHeight: "6px" }}
+                              >
+                                Netto Füllmenge :{Netto_full_value.value}
+                              </p>
+                            )}
+                            {fischanggebiet_value.isChecked && (
+                              <p
+                                style={{ fontSize: "10px", lineHeight: "6px" }}
+                              >
+                                Fischfanggebiet :{fischanggebiet_value.value}
+                              </p>
+                            )}
+                            {Herkunfit_value.isChecked && (
+                              <p
+                                style={{ fontSize: "10px", lineHeight: "6px" }}
+                              >
+                                Herkunft :{Herkunfit_value.value}
+                              </p>
+                            )}
+                          </div>
+                          <div>
+                            <div style={{ float: "right" }}>
+                              {PreisValue.isChecked && (
+                                <p
+                                  style={{
+                                    fontSize: "10px",
+                                    lineHeight: "6px",
+                                  }}
+                                >
+                                  Preis: {PreisValue.value}{" "}
+                                  {PreisValue.select_Value}
+                                </p>
+                              )}
+                              {PriesProValue.isChecked && (
+                                <p
+                                  style={{
+                                    fontSize: "10px",
+                                    lineHeight: "6px",
+                                  }}
+                                >
+                                  Preis pro 100g : {PriesProValue.value}{" "}
+                                  {PriesProValue.select_Value}
+                                </p>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 </div>
               </div>

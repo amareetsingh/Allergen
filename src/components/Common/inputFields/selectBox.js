@@ -1,6 +1,7 @@
-import React from "react";
+import React,{forwardRef} from "react";
 
-const SelectBox = ({ label, options, value, onChange }) => {
+const SelectBox =forwardRef((props, ref) => {
+  const { label, options, value, onChange}= props;
   return (
     <div>
       {label && <label>{label}</label>}
@@ -9,6 +10,7 @@ const SelectBox = ({ label, options, value, onChange }) => {
         aria-label="Default select example"
         value={value}
         onChange={onChange}
+        ref={ref}
       >
         {options.map((option) => (
           <option key={option.value} value={option.value}>
@@ -18,6 +20,6 @@ const SelectBox = ({ label, options, value, onChange }) => {
       </select>
     </div>
   );
-};
+});
 
 export default SelectBox;
