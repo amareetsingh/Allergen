@@ -194,7 +194,10 @@ function parseValue(value, delimiter) {
   return value.split(delimiter);
 }
 
-export const updateBrennwertPrepared = (BrennwertValue,portionsgrobeElement,  ) => {
+export const updateBrennwertPrepared = (
+  BrennwertValue,
+  portionsgrobeElement
+) => {
   // const portionsgrobeElement = "926820,0";
   let updatedValue = null;
 
@@ -216,8 +219,7 @@ export const updateBrennwertPrepared = (BrennwertValue,portionsgrobeElement,  ) 
   return updatedValue;
 };
 
-
-  export function update_Fett_prepared(Fett,PortionsgrobeElement,unit  ) {
+export function update_Fett_prepared(Fett, PortionsgrobeElement, unit) {
   // let Fett = "7,2 g";
   // let unit = "g";
   // let PortionsgrobeElement = "926820,0";
@@ -313,3 +315,70 @@ export const updateBrennwertPrepared = (BrennwertValue,portionsgrobeElement,  ) 
 //   const result = `${g} ${unit}`;
 //   return result;
 // };
+
+export function updateRmFettPrepared(value) {
+  let Fett = value;
+  let g = parseFloat(parseValue(Fett).join("."));
+  g = Math.round((g * 100) / 70)
+    .toString()
+    .replace(",", ".");
+  return g + " %";
+}
+
+export function update_rm_davon_prepared(value) {
+  let Fett = value;
+  let g = parseFloat(parseValue(Fett).join("."));
+  g = Math.round((g * 100) / 20)
+    .toString()
+    .replace(",", ".");
+  return g + " %";
+}
+
+export function update_rm_Kohlenhydrate_prepared(value) {
+  let Fett = value;
+  let g = parseFloat(parseValue(Fett).join("."));
+  g = Math.round((g * 100) / 260)
+    .toString()
+    .replace(",", ".");
+  return g + " %";
+}
+
+export function update_rm_Zucker_prepared(value) {
+  let Fett = value;
+  let g = parseFloat(parseValue(Fett).join("."));
+  g = Math.round((g * 100) / 90)
+    .toString()
+    .replace(",", ".");
+  return g + " %";
+}
+
+export function update_rm_Elweiß_prepared(value) {
+  let Fett = value;
+  let g = parseFloat(parseValue(Fett).join("."));
+  g = Math.round((g * 100) / 50)
+    .toString()
+    .replace(",", ".");
+  return g + " %";
+}
+
+export function update_rm_Salz_prepared(value) {
+  let Fett = value;
+  let g = parseFloat(parseValue(Fett).join("."));
+  g = Math.round((g * 100) / 6)
+    .toString()
+    .replace(",", ".");
+  return g + " %";
+}
+
+export function update_rm_Brennwert_prepared(value) {
+  let Brennwert = value;
+
+  if (typeof Brennwert != "undefined") {
+    let BrennwertArr = Brennwert.split("/");
+    //let kcal = parseFloat(parseValue(BrennwertArr[0]).join('.'));
+    let kcal = parseFloat(parseValue(BrennwertArr[1]).join("."));
+
+    kcal = Math.round((kcal * 100) / 2000).toString();
+    return kcal + " %";
+  }
+}

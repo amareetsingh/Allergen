@@ -1,22 +1,31 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
 import Modal from "react-bootstrap/Modal";
 import Tabs from "./Tabs";
 import "./style.css";
-import NutritionalTable from './NutritionalTable'
+import NutritionalTable from "./NutritionalTable";
 import html2pdf from "html2pdf.js";
 import html2canvas from "html2canvas";
+import { useDispatch } from "react-redux";
+import { formData } from "../../../DummyData";
+import { getUser } from "../../../../store/actions/Auth";
+
 // import html2canvas from 'html-to-image';
 // import LabelPreview from '../../../Preview/LabelPreview'
 const Index = ({ show, setShow }) => {
+  const dispatch = useDispatch();
   const [pdfCall, setPdfCall] = useState(false);
   const { RecipeDetails } = useSelector((state) => state.totalRecipe);
   const containerRef = useRef(null);
   const [isCheckedRadio, setIsCheckedRadio] = useState(false);
   const [AnableTableCheckValue, setAngableTableCheckValue] = useState(false);
-  const [ReferenzmengeTableCheckbox, setReferenzmengeTableCheckbox ] = useState(false)
-  console.log('REICPE DETAILS', RecipeDetails)
- 
+  const [ReferenzmengeTableCheckbox, setReferenzmengeTableCheckbox] =
+    useState(false);
+  const { user, isLoading } = useSelector((state) => state.users);
+const [unit, setUnit] = useState();
+  console.log("REICPE DETAILS", RecipeDetails);
+
+
   const {
     Recipe_name,
     Kurze_bescheribung,
@@ -32,17 +41,22 @@ const Index = ({ show, setShow }) => {
     Chargen_number_value,
     PreisValue,
     PriesProValue,
-    prepared_raw_value
+    prepared_raw_value,
   } = useSelector((state) => state.Preview);
 
   const recipe = {
-    recipeItems:RecipeDetails["recipe-items"], 
+    recipeItems: RecipeDetails["recipe-items"],
     totalWeight: RecipeDetails["total-weight"],
-    reductionFactor:RecipeDetails["reduction-factor"],
-    nutritionalType:prepared_raw_value ? prepared_raw_value :'raw'
+    reductionFactor: RecipeDetails["reduction-factor"],
+    nutritionalType: prepared_raw_value ? prepared_raw_value : "raw",
     // nutritionalType:'raw'
   };
 
+
+  const  unitOnchange = (e)=>{
+    const unitValue = e.target.value;
+    setUnit(unitValue);
+  }
   // generate pdf
 
   const generatePDF = (value) => {
@@ -96,14 +110,33 @@ const Index = ({ show, setShow }) => {
     setIsCheckedRadio(event.target.value === "true");
   };
 
-  const AngabeTableCheckbox = (e)=>{
+  const AngabeTableCheckbox = (e) => {
     const checked = e.target.checked;
     setAngableTableCheckValue(checked);
-  }
-  const ReferenzmengeHandle = (e)=>{
+  };
+  const ReferenzmengeHandle = (e) => {
     const checked = e.target.checked;
     setReferenzmengeTableCheckbox(checked);
+  };
+
+  useEffect(() => {
+    dispatch(getUser(formData));
+  }, []);
+
+  function cleanIntegerInFormat(number) {
+    let formattedNumber = number.toFixed(1); // Fix the number to one decimal place
+    formattedNumber = formattedNumber.replace(".", ","); // Replace the decimal point with a comma
+    return formattedNumber;
   }
+  let totalWeight = RecipeDetails["total-weight"];
+  let reductionFactor = RecipeDetails["reduction-factor"];
+  reductionFactor = reductionFactor ? reductionFactor : 1;
+  let portionsCount = RecipeDetails["portions-count"];
+
+  let Produktionsmenge_input = (totalWeight * reductionFactor) / portionsCount;
+  Produktionsmenge_input = cleanIntegerInFormat(Produktionsmenge_input); // Replace with the appropriate JavaScript function
+  let Produktionsmenge_inputDe = Produktionsmenge_input.replace(".", ",");
+
   return (
     <>
       <Modal
@@ -182,66 +215,88 @@ const Index = ({ show, setShow }) => {
                   </label>
                 </div>
               </div>
-              <div className="mt-4">
-                <p>Welche Angaben soll deine Nährwerttabelle enthalten?</p>
-                <div className="d-flex gap-2 mt-4">
-                  <div
-                    className=" d-flex flex-column gap-3"
-                    style={{ width: "170px" }}
-                  >
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        value=""
-                        onChange={AngabeTableCheckbox}
-
-                      />
-                      <label className="form-check-label">Angabe je</label>
+              <div className="mt-4 ">
+                <div>
+                  <p>Welche Angaben soll deine Nährwerttabelle enthalten?</p>
+                  <div className="d-flex gap-2 mt-4">
+                    <div
+                      className=" d-flex flex-column gap-3"
+                      style={{ width: "170px" }}
+                    >
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          value=""
+                          onChange={AngabeTableCheckbox}
+                        />
+                        <label className="form-check-label">Angabe je</label>
+                      </div>
+                      <div className="form-check">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          value=""
+                          onChange={ReferenzmengeHandle}
+                        />
+                        <label className="form-check-label">
+                          mit Referenzmenge
+                        </label>
+                      </div>
                     </div>
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        value=""
-                        onChange={ReferenzmengeHandle}
-                      />
-                      <label className="form-check-label">
-                        mit Referenzmenge
-                      </label>
+                    <div style={{ width: "90px" }}>
+                      {" "}
+                      <input type="email" className="form-control" />{" "}
                     </div>
-                  </div>
-                  <div style={{ width: "90px" }}>
-                    {" "}
-                    <input type="email" className="form-control" />{" "}
-                  </div>
 
-                  <label
-                    for="inputPassword"
-                    className="col-sm-2 col-form-label"
-                  >
-                    PortionsgroBe
-                  </label>
-                  <div style={{ width: "90px" }}>
-                    <input type="password" className="form-control" />
-                  </div>
-                  <div>
-                    <select className="form-select  ">
-                      <option selected value={RecipeDetails["unit-measure"]}>
-                        {RecipeDetails["unit-measure"]}
-                      </option>
-                      <option value="ml">ml</option>
-                    </select>
+                    <label
+                      for="inputPassword"
+                      className="col-sm-2 col-form-label"
+                    >
+                      PortionsgroBe
+                    </label>
+                    <div style={{ width: "90px" }}>
+                      <input
+                        type="text"
+                        className="form-control"
+                        value={Produktionsmenge_inputDe}
+                      />
+                    </div>
+                    <div>
+                      <select className="form-select  " onChange={unitOnchange}>
+                        <option selected value={RecipeDetails["unit-measure"]}>
+                          {RecipeDetails["unit-measure"]}
+                        </option>
+                        <option value="ml">ml</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
-                <div className="lable_div " style={{ height: "450px" }}>
-                 
+              </div>
+              <div className="lable_div mt-4 d-flex justify-content-center ">
+                <div style={{ width: "70%" }}>
+                  <div
+                    className="d-flex align-items-center "
+                    style={{ width: "100%" }}
+                  >
+                    <div
+                      style={{ height: "30px", borderRight: "1px solid black" }}
+                    ></div>
+                    <div
+                    
+                      style={{ width: "100%", borderBottom: "1px solid black" }}
+                    >  </div>
+                    <div
+                      style={{ height: "30px", borderRight: "1px solid black" }}
+                    ></div>
+                  </div>
                   <div
                     ref={containerRef}
-                    className="d-flex w-75 justify-content-center  flex-column mt-4"
-                    style={{ height: "auto" }}
+                    className="d-flex  justify-content-center  flex-column mt-4"
+                    style={{ height: "auto", }}
                   >
-                    <div className="d-flex justify-content-between w-75">
+                    <div className="d-flex  justify-content-between ">
+                     
                       <div>
                         {Recipe_name && (
                           <h6 style={{ lineHeight: "30px" }}>{Recipe_name}</h6>
@@ -255,112 +310,180 @@ const Index = ({ show, setShow }) => {
                       </div>
                       <div>
                         {Chargen_number_value.isChecked && (
-                          <p style={{ fontSize: "14px", lineHeight: "6px" }}>
+                          <span  style={{ fontSize: "12px", lineHeight: "10px", float:'right', marginTop:'4px' }}>
                             {Chargen_number_value.value}
-                          </p>
+                          </span>
                         )}
                         <h4>Rezeptrechner</h4>
                       </div>
                     </div>
                     {isCheckedRadio == true ? (
-                      <div className="w-100 d-flex gap-4">
-                      <NutritionalTable recipe={recipe} AnableTableCheckValue={AnableTableCheckValue} ReferenzmengeTableCheckbox={ReferenzmengeTableCheckbox} />
+                      <div className="w-100">
+                        <NutritionalTable
+                        unit={unit}
+                          recipe={recipe}
+                          AnableTableCheckValue={AnableTableCheckValue}
+                          ReferenzmengeTableCheckbox={
+                            ReferenzmengeTableCheckbox
+                          }
+                        />
+                        {ReferenzmengeTableCheckbox && (
+                          <p style={{ fontSize: "10px" }}>
+                            *Referenzmenge für einen durchschnittlichen
+                            Erwachsenen (8400 kJ/ 2000 kcal)
+                          </p>
+                        )}
                       </div>
                     ) : (
-                      <div className="w-100 d-flex gap-4">
-                        <div style={{ height: "200px", width: "300px" }}>
-                        <NutritionalTable recipe={recipe} AnableTableCheckValue={AnableTableCheckValue} ReferenzmengeTableCheckbox={ReferenzmengeTableCheckbox} />
+                      <div className="d-flex flex-column gap-2">
+                        <div className="w-100 d-flex gap-4">
+                          <div style={{ height: "auto", width: "auto" }}>
+                            <NutritionalTable
+                            unit={unit}
+                              recipe={recipe}
+                              AnableTableCheckValue={AnableTableCheckValue}
+                              ReferenzmengeTableCheckbox={
+                                ReferenzmengeTableCheckbox
+                              }
+                            />
+                          </div>
+
+                          <div style={{ width: "200px" }}>
+                            <p style={{ fontSize: "8px", lineHeight: "14px" }}>
+                              Zutaten: Gaisburger Marsch (1), Hackbraten mit
+                              Soße (2), Joghurt natur (fettarm) (Milch),
+                              Tortellini (roh) (Gluten, Weizen, Eier),
+                              Sauerkirschen (im Glas), E-482
+                              Calciumstearoyl-2-lactylat, DRM, A/B teting2333 -
+                              (Nutella, Apples, Mehl) (Roggen, Gerste, mit
+                              Geschmacksverstärker, mit Farbstoff,
+                              Mehlbehandlungsmittel), Feldsalat, A test for the
+                              searching (Roggen, Hafer, mit
+                              Antioxidationsmittel, Säuerungsmittel),
+                              Fenchelsamen
+                            </p>
+                            {Zu_input_value.isChecked && (
+                              <div
+                                className="border border-1 text-center p-1"
+                                style={{ fontSize: "10px" }}
+                              >
+                                {MindestensSelect} {Zu_input_value.value}
+                              </div>
+                            )}
+                            <div className="mt-3">
+                              {Netto_value.isChecked && (
+                                <p
+                                  style={{
+                                    fontSize: "10px",
+                                    lineHeight: "6px",
+                                  }}
+                                >
+                                  Netto Gewicht : {Netto_value.value}
+                                </p>
+                              )}
+                              {Abtropfgewicht_value.isChecked && (
+                                <p
+                                  style={{
+                                    fontSize: "10px",
+                                    lineHeight: "6px",
+                                  }}
+                                >
+                                  Abtropfgewicht :{Abtropfgewicht_value.value}
+                                </p>
+                              )}
+                              {Fullgewicht_Value.isChecked && (
+                                <p
+                                  style={{
+                                    fontSize: "10px",
+                                    lineHeight: "6px",
+                                  }}
+                                >
+                                  Füllgewicht :{Fullgewicht_Value.value}
+                                </p>
+                              )}
+                              {Netto_full_value.isChecked && (
+                                <p
+                                  style={{
+                                    fontSize: "10px",
+                                    lineHeight: "6px",
+                                  }}
+                                >
+                                  Netto Füllmenge :{Netto_full_value.value}
+                                </p>
+                              )}
+                              {fischanggebiet_value.isChecked && (
+                                <p
+                                  style={{
+                                    fontSize: "10px",
+                                    lineHeight: "6px",
+                                  }}
+                                >
+                                  Fischfanggebiet :{fischanggebiet_value.value}
+                                </p>
+                              )}
+                              {Herkunfit_value.isChecked && (
+                                <p
+                                  style={{
+                                    fontSize: "10px",
+                                    lineHeight: "6px",
+                                  }}
+                                >
+                                  Herkunft :{Herkunfit_value.value}
+                                </p>
+                              )}
+                            </div>
+                            <div>
+                              <div style={{ float: "right" }}>
+                                {PreisValue.isChecked && (
+                                  <p
+                                    style={{
+                                      fontSize: "10px",
+                                      lineHeight: "6px",
+                                    }}
+                                  >
+                                    Preis: {PreisValue.value}{" "}
+                                    {PreisValue.select_Value}
+                                  </p>
+                                )}
+                                {PriesProValue.isChecked && (
+                                  <p
+                                    style={{
+                                      fontSize: "10px",
+                                      lineHeight: "6px",
+                                    }}
+                                  >
+                                    Preis pro 100g : {PriesProValue.value}{" "}
+                                    {PriesProValue.select_Value}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                        <div style={{ width: "200px" }}>
-                          <p style={{ fontSize: "8px", lineHeight: "14px" }}>
-                            Zutaten: Gaisburger Marsch (1), Hackbraten mit Soße
-                            (2), Joghurt natur (fettarm) (Milch), Tortellini
-                            (roh) (Gluten, Weizen, Eier), Sauerkirschen (im
-                            Glas), E-482 Calciumstearoyl-2-lactylat, DRM, A/B
-                            teting2333 - (Nutella, Apples, Mehl) (Roggen,
-                            Gerste, mit Geschmacksverstärker, mit Farbstoff,
-                            Mehlbehandlungsmittel), Feldsalat, A test for the
-                            searching (Roggen, Hafer, mit Antioxidationsmittel,
-                            Säuerungsmittel), Fenchelsamen
-                          </p>
-                          {Zu_input_value.isChecked && (
-                            <div
-                              className="border border-1 text-center p-1"
-                              style={{ fontSize: "10px" }}
-                            >
-                              {MindestensSelect} {Zu_input_value.value}
-                            </div>
+                        <div>
+                          {ReferenzmengeTableCheckbox && (
+                            <p style={{ fontSize: "10px", lineHeight: "4px" }}>
+                              *Referenzmenge für einen durchschnittlichen
+                              Erwachsenen (8400 kJ/ 2000 kcal)
+                            </p>
                           )}
-                          <div className="mt-3">
-                            {Netto_value.isChecked && (
-                              <p
-                                style={{ fontSize: "10px", lineHeight: "6px" }}
-                              >
-                                Netto Gewicht : {Netto_value.value}
-                              </p>
-                            )}
-                            {Abtropfgewicht_value.isChecked && (
-                              <p
-                                style={{ fontSize: "10px", lineHeight: "6px" }}
-                              >
-                                Abtropfgewicht :{Abtropfgewicht_value.value}
-                              </p>
-                            )}
-                            {Fullgewicht_Value.isChecked && (
-                              <p
-                                style={{ fontSize: "10px", lineHeight: "6px" }}
-                              >
-                                Füllgewicht :{Fullgewicht_Value.value}
-                              </p>
-                            )}
-                            {Netto_full_value.isChecked && (
-                              <p
-                                style={{ fontSize: "10px", lineHeight: "6px" }}
-                              >
-                                Netto Füllmenge :{Netto_full_value.value}
-                              </p>
-                            )}
-                            {fischanggebiet_value.isChecked && (
-                              <p
-                                style={{ fontSize: "10px", lineHeight: "6px" }}
-                              >
-                                Fischfanggebiet :{fischanggebiet_value.value}
-                              </p>
-                            )}
-                            {Herkunfit_value.isChecked && (
-                              <p
-                                style={{ fontSize: "10px", lineHeight: "6px" }}
-                              >
-                                Herkunft :{Herkunfit_value.value}
-                              </p>
-                            )}
-                          </div>
-                          <div>
-                            <div style={{ float: "right" }}>
-                              {PreisValue.isChecked && (
-                                <p
-                                  style={{
-                                    fontSize: "10px",
-                                    lineHeight: "6px",
-                                  }}
-                                >
-                                  Preis: {PreisValue.value}{" "}
-                                  {PreisValue.select_Value}
-                                </p>
-                              )}
-                              {PriesProValue.isChecked && (
-                                <p
-                                  style={{
-                                    fontSize: "10px",
-                                    lineHeight: "6px",
-                                  }}
-                                >
-                                  Preis pro 100g : {PriesProValue.value}{" "}
-                                  {PriesProValue.select_Value}
-                                </p>
-                              )}
-                            </div>
-                          </div>
+                          {
+                            <p style={{ fontSize: "10px", lineHeight: "15px" }}>
+                              {` ${
+                                user && user.user && user.user.companyName
+                              }, ${
+                                user && user.user && user.user.streetNumber
+                              }, ${
+                                user && user.user && user.user.postalCode
+                              }, ${user && user.user && user.user.city},${
+                                user && user.user && user.user.country
+                              }, Telefon:${
+                                user && user.user && user.user.phone
+                              }, E-Mail: ${
+                                user && user.user && user.user.publicEmail
+                              }`}{" "}
+                            </p>
+                          }
                         </div>
                       </div>
                     )}

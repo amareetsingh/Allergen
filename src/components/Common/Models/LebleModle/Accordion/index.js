@@ -8,6 +8,7 @@ import InputField from "../../../inputFields/inputField";
 import CheckField from "../../../inputFields/checkField";
 import SelectBox from "../../../inputFields/selectBox";
 import { useSelector, useDispatch } from "react-redux";
+
 import {
   getDateInDDMMYYYYFormat,
   getRowNutritionalVal,
@@ -62,8 +63,11 @@ const Index = () => {
   const [PriesProSelectValue, setPreisProSelectValue] = useState();
   const [PreisProInputValue, setPreisProInputValue] = useState();
   const [PreisProCheckValue, setPreisProCheckValue] = useState();
+  const { user, isLoading } = useSelector((state) => state.users);
 
   const { prepared_raw_value } = useSelector((state) => state.Preview);
+
+
 
   const recipe = {
     recipeItems: RecipeDetails["recipe-items"],
@@ -79,6 +83,7 @@ const Index = () => {
     recipe.nutritionalType,
     recipe.reductionFactor
   );
+
 
   const preparedRawHandleCheckbox = (e) => {
     const checked = e.target.checked;
@@ -425,6 +430,7 @@ const Index = () => {
                     <CheckField
                       label={"Kurze Beschreibung"}
                       onChange={handleCheck}
+                      defaultValue={RecipeDetails['recipe-description'] ? RecipeDetails['recipe-description'].trim() : ''}
                     />
                   </div>
                   <InputField
@@ -445,7 +451,7 @@ const Index = () => {
                   <InputField
                     type={"text"}
                     onChange={handleInputBeilagen}
-                    defaultValue="Beilagan:"
+                    defaultValue={RecipeDetails['recommended-sides'] ? RecipeDetails['recommended-sides'].trim() : 'Beilagen:'}
                     disabled={!isCheckedBeilagen}
                     ref={BeilagenRef}
                   />
@@ -566,6 +572,8 @@ const Index = () => {
                     <div className="form-check">
                       <CheckField
                         label={"Netto Gewicht"}
+                        defaultChecked={true} 
+
                         onChange={handleCheckNetto}
                       />
                     </div>
@@ -574,7 +582,7 @@ const Index = () => {
                       ref={InputFullmenge}
                       onChange={inputhandlefullmenge}
                       // defaultValue={`${RecipeDetails.nettogewicht}g`}
-                      defaultValue={"10,0g"}
+                      defaultValue={"2250,0g"}
                     />
                   </div>
                 )}
@@ -630,7 +638,7 @@ const Index = () => {
                   <InputField
                     type="text"
                     label="Artikel Nummer"
-                    defaultValue={"abc-1232"}
+                    defaultValue={RecipeDetails['recipe-name']}
                   />
                 </div>
 
@@ -885,16 +893,46 @@ const Index = () => {
                 <div className="form-check">
                   <CheckField label={"Logo"} />
                 </div>
+                
                 <InputField type={"text"} />
               </div>
               <div className="d-flex flex-column gap-4">
-                <InputField type={"text"} label="Firma" />
-                <InputField type={"text"} label="StraBe" />
-                <InputField type={"text"} label="Postleitzahlt" />
-                <InputField type={"text"} label="Stadt" />
-                <InputField type={"text"} label="Land" />
-                <InputField type={"text"} label="Telefonnummer" />
-                <InputField type={"text"} label="E-Mail" />
+                <InputField
+                  type={"text"}
+                  label="Firma"
+                  defaultValue={user && user.user && user.user.companyName}
+                />
+              
+                <InputField
+                  type={"text"}
+                  label="StraBe"
+                  defaultValue={user && user.user && user.user.streetNumber}
+                />
+                <InputField
+                  type={"text"}
+                  label="Postleitzahlt"
+                  defaultValue={user && user.user && user.user.postalCode}
+                />
+                <InputField
+                  type={"text"}
+                  label="Stadt"
+                  defaultValue={user && user.user && user.user.city}
+                />
+                <InputField
+                  type={"text"}
+                  label="Land"
+                  defaultValue={user && user.user && user.user.country}
+                />
+                <InputField
+                  type={"text"}
+                  label="Telefonnummer"
+                  defaultValue={user && user.user && user.user.phone}
+                />
+                <InputField
+                  type={"text"}
+                  label="E-Mail"
+                  defaultValue={user && user.user && user.user.publicEmail}
+                />
               </div>
             </div>
           </Typography>
