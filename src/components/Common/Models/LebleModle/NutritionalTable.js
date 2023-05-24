@@ -12,20 +12,17 @@ import {
   update_rm_Brennwert_prepared,
 } from "../../../../Services/function";
 import { useSelector } from "react-redux";
-import { padding } from '@mui/system';
+import { padding } from "@mui/system";
 const NutritionalTable = ({
   recipe,
   ReferenzmengeTableCheckbox,
   AnableTableCheckValue,
-  unit
+  unit,
 }) => {
   //  const { recipeItems, totalWeight, nutritionalType, reductionFactor } = recipe;
   const { prepared_raw_value } = useSelector((state) => state.Preview);
   const { portionRef } = useSelector((state) => state.Preview);
   const { RecipeDetails } = useSelector((state) => state.totalRecipe);
-
-  
-  
 
   const nutritionalValues = getRowNutritionalVal(
     recipe.recipeItems,
@@ -55,10 +52,10 @@ kcal`;
   // const FattValue = nutritionalValues.fat_gram;
 
   const recipe1 = {
-    recipeItems:RecipeDetails["recipe-items"], 
+    recipeItems: RecipeDetails["recipe-items"],
     totalWeight: RecipeDetails["total-weight"],
-    reductionFactor:RecipeDetails["reduction-factor"],
-    nutritionalType:'raw'
+    reductionFactor: RecipeDetails["reduction-factor"],
+    nutritionalType: "raw",
     // nutritionalType:'raw'
   };
   const nutritionalRawValue = getRowNutritionalVal(
@@ -66,25 +63,30 @@ kcal`;
     recipe1.totalWeight,
     recipe1.nutritionalType,
     recipe1.reductionFactor
-  )
+  );
   return (
-    <table>
-      <table className="table table-bordered    ">
+      <table className="table table-bordered  w-100   ">
         <tbody>
-          <tr style={{fontSize:'10px'}} >
-            <td style={{padding:'4px'}} >Durchschnittliche Nährwerte</td>
-            <td  style={{padding:'4px'}} >pro 100{unitValue}</td>
-            {AnableTableCheckValue == true && <td style={{padding:'4px'}} >pro (1264290,0{unitValue})</td>}
-            {ReferenzmengeTableCheckbox == true && <td style={{padding:'4px'}} >% RM pro</td>}
-          </tr>
-          <tr style={{fontSize:'10px'}}  >
-            <td style={{padding:'4px'}} >Brennwert</td>
-            <td style={{padding:'4px'}} >{BrennwertValue}</td>
+          <tr style={{ fontSize: "10px" }}>
+            <td >Durchschnittliche Nährwerte</td>
+            <td>pro 100{unitValue}</td>
             {AnableTableCheckValue == true && (
-              <td style={{padding:'4px'}}  >{updateBrennwertPrepared(BrennwertValue, portionValue)}</td>
+              <td >pro (1264290,0{unitValue})</td>
             )}
             {ReferenzmengeTableCheckbox == true && (
-              <td style={{padding:'4px'}} >
+              <td >% RM pro</td>
+            )}
+          </tr>
+          <tr style={{ fontSize: "10px" }}>
+            <td >Brennwert</td>
+            <td >{BrennwertValue}</td>
+            {AnableTableCheckValue == true && (
+              <td >
+                {updateBrennwertPrepared(BrennwertValue, portionValue)}
+              </td>
+            )}
+            {ReferenzmengeTableCheckbox == true && (
+              <td >
                 {AnableTableCheckValue == true
                   ? update_rm_Brennwert_prepared(
                       updateBrennwertPrepared(BrennwertValue, portionValue)
@@ -93,11 +95,13 @@ kcal`;
               </td>
             )}
           </tr>
-          <tr style={{fontSize:'10px'}}  >
-            <td style={{padding:'4px'}} >Fett</td>
-            <td  style={{padding:'4px'}} >{nutritionalValues.fat_gram} {unitValue}</td>
+          <tr style={{ fontSize: "10px" }}>
+            <td >Fett</td>
+            <td >
+              {nutritionalValues.fat_gram} {unitValue}
+            </td>
             {AnableTableCheckValue == true && (
-              <td style={{padding:'4px'}} >
+              <td >
                 {" "}
                 {update_Fett_prepared(
                   nutritionalValues.fat_gram,
@@ -107,7 +111,7 @@ kcal`;
               </td>
             )}
             {ReferenzmengeTableCheckbox == true && (
-              <td style={{padding:'4px'}} >
+              <td>
                 {AnableTableCheckValue == true
                   ? updateRmFettPrepared(
                       update_Fett_prepared(
@@ -120,12 +124,14 @@ kcal`;
               </td>
             )}
           </tr>
-          <tr style={{fontSize:'10px'}}  >
-            <td style={{padding:'4px'}} >davon gesättigte Fettsäuren</td>
-            <td style={{padding:'4px'}} >{nutritionalValues.sat_fat_gram} {unitValue}</td>
+          <tr style={{ fontSize: "10px" }}>
+            <td >davon gesättigte Fettsäuren</td>
+            <td>
+              {nutritionalValues.sat_fat_gram} {unitValue}
+            </td>
 
             {AnableTableCheckValue == true && (
-              <td style={{padding:'4px'}} >
+              <td >
                 {update_Fett_prepared(
                   nutritionalValues.sat_fat_gram,
                   portionValue,
@@ -134,7 +140,7 @@ kcal`;
               </td>
             )}
             {ReferenzmengeTableCheckbox == true && (
-              <td style={{padding:'4px'}} >
+              <td >
                 {AnableTableCheckValue == true
                   ? update_rm_davon_prepared(
                       update_Fett_prepared(
@@ -147,12 +153,14 @@ kcal`;
               </td>
             )}
           </tr>
-          <tr style={{fontSize:'10px'}}  >
-            <td style={{padding:'4px'}} >dKohlenhydrate</td>
-            <td style={{padding:'4px'}} >{nutritionalValues.carbs_gram} {unitValue}</td>
+          <tr style={{ fontSize: "10px" }}>
+            <td >dKohlenhydrate</td>
+            <td>
+              {nutritionalValues.carbs_gram} {unitValue}
+            </td>
 
             {AnableTableCheckValue == true && (
-              <td style={{padding:'4px'}} >
+              <td >
                 {update_Fett_prepared(
                   nutritionalValues.carbs_gram,
                   portionValue,
@@ -161,7 +169,7 @@ kcal`;
               </td>
             )}
             {ReferenzmengeTableCheckbox == true && (
-              <td style={{padding:'4px'}} >
+              <td >
                 {" "}
                 {AnableTableCheckValue == true
                   ? update_rm_Kohlenhydrate_prepared(
@@ -172,17 +180,19 @@ kcal`;
                       )
                     )
                   : update_rm_Kohlenhydrate_prepared(
-                    nutritionalRawValue.carbs_gram
+                      nutritionalRawValue.carbs_gram
                     )}
               </td>
             )}
           </tr>
-          <tr style={{fontSize:'10px'}}  >
-            <td style={{padding:'4px'}} >davon Zucker</td>
-            <td style={{padding:'4px'}} >{nutritionalValues.sugar_gram} {unitValue}</td>
+          <tr style={{ fontSize: "10px" }}>
+            <td >davon Zucker</td>
+            <td >
+              {nutritionalValues.sugar_gram} {unitValue}
+            </td>
 
             {AnableTableCheckValue == true && (
-              <td style={{padding:'4px'}} >
+              <td >
                 {update_Fett_prepared(
                   nutritionalValues.sugar_gram,
                   portionValue,
@@ -191,7 +201,7 @@ kcal`;
               </td>
             )}
             {ReferenzmengeTableCheckbox == true && (
-              <td style={{padding:'4px'}} >
+              <td >
                 {AnableTableCheckValue == true
                   ? update_rm_Zucker_prepared(
                       update_Fett_prepared(
@@ -204,12 +214,14 @@ kcal`;
               </td>
             )}
           </tr>
-          <tr style={{fontSize:'10px'}} >
-            <td style={{padding:'4px'}} >Eiweiß</td>
-            <td style={{padding:'4px'}} >{nutritionalValues.protein_gram} {unitValue}</td>
+          <tr style={{ fontSize: "10px" }}>
+            <td >Eiweiß</td>
+            <td>
+              {nutritionalValues.protein_gram} {unitValue}
+            </td>
 
             {AnableTableCheckValue == true && (
-              <td style={{padding:'4px'}} >
+              <td>
                 {update_Fett_prepared(
                   nutritionalValues.protein_gram,
                   portionValue,
@@ -218,7 +230,7 @@ kcal`;
               </td>
             )}
             {ReferenzmengeTableCheckbox == true && (
-              <td style={{padding:'4px'}} >
+              <td >
                 {AnableTableCheckValue == true
                   ? update_rm_Elweiß_prepared(
                       update_Fett_prepared(
@@ -231,11 +243,13 @@ kcal`;
               </td>
             )}
           </tr>
-          <tr style={{fontSize:'10px',}}  >
-            <td style={{padding:'4px'}}  >Salz</td>
-            <td style={{padding:'4px'}} >{nutritionalValues.salt_gram} {unitValue}</td>
+          <tr style={{ fontSize: "10px" }}>
+            <td >Salz</td>
+            <td >
+              {nutritionalValues.salt_gram} {unitValue}
+            </td>
             {AnableTableCheckValue == true && (
-              <td style={{padding:'4px'}} >
+              <td style={{ padding: "4px" }}>
                 {update_Fett_prepared(
                   nutritionalValues.salt_gram,
                   portionValue,
@@ -244,7 +258,7 @@ kcal`;
               </td>
             )}
             {ReferenzmengeTableCheckbox == true && (
-              <td style={{padding:'4px'}} >
+              <td >
                 {AnableTableCheckValue == true
                   ? update_rm_Salz_prepared(
                       update_Fett_prepared(
@@ -259,7 +273,6 @@ kcal`;
           </tr>
         </tbody>
       </table>
-    </table>
   );
 };
 

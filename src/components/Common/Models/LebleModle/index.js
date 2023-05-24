@@ -9,7 +9,10 @@ import html2canvas from "html2canvas";
 import { useDispatch } from "react-redux";
 import { formData } from "../../../DummyData";
 import { getUser } from "../../../../store/actions/Auth";
-
+import { styled } from "@mui/material/styles";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import Box from "@mui/material/Box";
 // import html2canvas from 'html-to-image';
 // import LabelPreview from '../../../Preview/LabelPreview'
 const Index = ({ show, setShow }) => {
@@ -22,9 +25,8 @@ const Index = ({ show, setShow }) => {
   const [ReferenzmengeTableCheckbox, setReferenzmengeTableCheckbox] =
     useState(false);
   const { user, isLoading } = useSelector((state) => state.users);
-const [unit, setUnit] = useState();
+  const [unit, setUnit] = useState();
   console.log("REICPE DETAILS", RecipeDetails);
-
 
   const {
     Recipe_name,
@@ -42,6 +44,10 @@ const [unit, setUnit] = useState();
     PreisValue,
     PriesProValue,
     prepared_raw_value,
+    layout_radio_check,
+    changeLayoutValue,
+    sliderValue,
+    sliderValue2,
   } = useSelector((state) => state.Preview);
 
   const recipe = {
@@ -52,11 +58,10 @@ const [unit, setUnit] = useState();
     // nutritionalType:'raw'
   };
 
-
-  const  unitOnchange = (e)=>{
+  const unitOnchange = (e) => {
     const unitValue = e.target.value;
     setUnit(unitValue);
-  }
+  };
   // generate pdf
 
   const generatePDF = (value) => {
@@ -110,6 +115,15 @@ const [unit, setUnit] = useState();
     setIsCheckedRadio(event.target.value === "true");
   };
 
+  useEffect(() => {
+    if (changeLayoutValue == 40) {
+      setIsCheckedRadio(true);
+    }
+    if (changeLayoutValue !== 40) {
+      setIsCheckedRadio(false);
+    }
+  }, [changeLayoutValue]);
+
   const AngabeTableCheckbox = (e) => {
     const checked = e.target.checked;
     setAngableTableCheckValue(checked);
@@ -136,6 +150,14 @@ const [unit, setUnit] = useState();
   let Produktionsmenge_input = (totalWeight * reductionFactor) / portionsCount;
   Produktionsmenge_input = cleanIntegerInFormat(Produktionsmenge_input); // Replace with the appropriate JavaScript function
   let Produktionsmenge_inputDe = Produktionsmenge_input.replace(".", ",");
+
+  const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: "center",
+    color: theme.palette.text.secondary,
+  }));
 
   return (
     <>
@@ -273,8 +295,35 @@ const [unit, setUnit] = useState();
                   </div>
                 </div>
               </div>
-              <div className="lable_div mt-4 d-flex justify-content-center ">
-                <div style={{ width: "70%" }}>
+
+              {/* **** table start  */}
+
+              <div
+                className="mt-6` d-flex gap-4 justify-content-center align-items-center"
+                style={{ width: "100%", height: `${sliderValue2}%`,}}
+              >
+           
+           <div
+                  style={{
+                    height:'80%',
+                    width: "30px",
+                    borderBottom: "1px solid black",
+                    borderTop: "1px solid black",
+                  }}
+                  className="d-flex justify-content-center"
+                >
+                  <div
+                    style={{
+                      height: "100%",
+                      width: "1px ",
+                      background: "black",
+                    }}
+                  >
+                    {" "}
+                  </div>
+                </div>
+                <div  style={{ width: `${changeLayoutValue}%`  }}>
+            
                   <div
                     className="d-flex align-items-center "
                     style={{ width: "100%" }}
@@ -283,44 +332,54 @@ const [unit, setUnit] = useState();
                       style={{ height: "30px", borderRight: "1px solid black" }}
                     ></div>
                     <div
-                    
                       style={{ width: "100%", borderBottom: "1px solid black" }}
-                    >  </div>
+                    >
+                      {" "}
+                    </div>
                     <div
                       style={{ height: "30px", borderRight: "1px solid black" }}
                     ></div>
                   </div>
+
                   <div
-                    ref={containerRef}
-                    className="d-flex  justify-content-center  flex-column mt-4"
-                    style={{ height: "auto", }}
+                    className="d-flex justify-content-between"
+                    style={{ width: "100%" }}
                   >
-                    <div className="d-flex  justify-content-between ">
-                     
-                      <div>
-                        {Recipe_name && (
-                          <h6 style={{ lineHeight: "30px" }}>{Recipe_name}</h6>
-                        )}
-                        {Kurze_bescheribung && (
-                          <p style={{ lineHeight: "8px" }}>
-                            {Kurze_bescheribung}
-                          </p>
-                        )}
-                        {Beilagen && <p>{Beilagen}</p>}
-                      </div>
-                      <div>
-                        {Chargen_number_value.isChecked && (
-                          <span  style={{ fontSize: "12px", lineHeight: "10px", float:'right', marginTop:'4px' }}>
-                            {Chargen_number_value.value}
-                          </span>
-                        )}
-                        <h4>Rezeptrechner</h4>
-                      </div>
+                    <div>
+                      {Recipe_name && (
+                        <h6 style={{ lineHeight: "30px" }}>{Recipe_name}</h6>
+                      )}
+                      {Kurze_bescheribung && (
+                        <p style={{ lineHeight: "8px" }}>
+                          {Kurze_bescheribung}
+                        </p>
+                      )}
+                      {Beilagen && <p>{Beilagen}</p>}
                     </div>
+                    <div>
+                      {Chargen_number_value.isChecked && (
+                        <span
+                          style={{
+                            fontSize: "12px",
+                            lineHeight: "10px",
+                            float: "right",
+                            marginTop: "4px",
+                          }}
+                        >
+                          {Chargen_number_value.value}
+                        </span>
+                      )}
+                      <h4>Rezeptrechner</h4>
+                    </div>
+                  </div>
+
+                  <div style={{ width: "100%" }}>
                     {isCheckedRadio == true ? (
-                      <div className="w-100">
+                      <div
+                        style={{ width: "100%", border: "1px solid yellow" }}
+                      >
                         <NutritionalTable
-                        unit={unit}
+                          unit={unit}
                           recipe={recipe}
                           AnableTableCheckValue={AnableTableCheckValue}
                           ReferenzmengeTableCheckbox={
@@ -335,11 +394,25 @@ const [unit, setUnit] = useState();
                         )}
                       </div>
                     ) : (
-                      <div className="d-flex flex-column gap-2">
-                        <div className="w-100 d-flex gap-4">
-                          <div style={{ height: "auto", width: "auto" }}>
+                      <>
+                        {/* add flex column  */}
+                        <div
+                          className={
+                            layout_radio_check == true
+                              ? " d-flex flex-column  gap-2"
+                              : "d-flex gap-2"
+                          }
+                          style={{ width: "auto" }}
+                        >
+                          <div
+                            className=""
+                            style={{
+                              minWidth: "200px",
+                              width: `${sliderValue}%`,
+                            }}
+                          >
                             <NutritionalTable
-                            unit={unit}
+                              unit={unit}
                               recipe={recipe}
                               AnableTableCheckValue={AnableTableCheckValue}
                               ReferenzmengeTableCheckbox={
@@ -347,8 +420,14 @@ const [unit, setUnit] = useState();
                               }
                             />
                           </div>
-
-                          <div style={{ width: "200px" }}>
+                          {/* add width 100%  */}
+                          <div
+                            style={{
+                              minWidth: "200px",
+                              width:
+                                layout_radio_check == true ? "100%" : "250px",
+                            }}
+                          >
                             <p style={{ fontSize: "8px", lineHeight: "14px" }}>
                               Zutaten: Gaisburger Marsch (1), Hackbraten mit
                               Soße (2), Joghurt natur (fettarm) (Milch),
@@ -485,10 +564,12 @@ const [unit, setUnit] = useState();
                             </p>
                           }
                         </div>
-                      </div>
+                      </>
                     )}
                   </div>
                 </div>
+
+
               </div>
             </div>
             <div

@@ -16,7 +16,11 @@ const intialState = {
   PreisValue:{},
   PriesProValue:{},
   prepared_raw_value:"",
-  portionRef:''
+  portionRef:'',
+  layout_radio_check:false,
+  changeLayoutValue:80,
+  sliderValue:50,
+  sliderValue2:70,
 };
 
 const Preview = function (state = intialState, action) {
@@ -116,6 +120,36 @@ const Preview = function (state = intialState, action) {
       return {
         ...state,
         portionRef: action.payload,
+      };
+    }
+    case Actions.SET_QUERFORMAT_LAYOUT_RADIO: {
+      return {
+        ...state,
+        layout_radio_check: action.payload,
+      };
+    }
+    case Actions.CHANGE_LAYOUT_WITH_MM: {
+      return {
+        ...state,
+        changeLayoutValue: action.payload,
+      };
+    }
+    case Actions.SET_SLIDER_VALUE: {
+      return {
+        ...state,
+        sliderValue: action.payload,
+      };
+    }
+    case Actions.SET_SLIDER_VALUE1: {
+      return {
+        ...state,
+        changeLayoutValue: action.payload,
+      };
+    }
+    case Actions.SET_SLIDER_VALUE2: {
+      return {
+        ...state,
+        sliderValue2: action.payload,
       };
     }
 

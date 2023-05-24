@@ -131,6 +131,54 @@ export const setPortionserf = (payload) => {
       });
     };
   };
+export const setQuerformat_radio_layout = (payload) => {
+    return (dispatch) => {
+      dispatch({
+        type: Actions.SET_QUERFORMAT_LAYOUT_RADIO,
+        payload: payload,
+      });
+    };
+  };
+export const setHochformat_radio_layout = (payload) => {
+    return (dispatch) => {
+      dispatch({
+        type: Actions.SET_QUERFORMAT_LAYOUT_RADIO,
+        payload: payload,
+      });
+    };
+  };
+export const changeLayoutwithMm = (payload) => {
+    return (dispatch) => {
+      dispatch({
+        type: Actions.CHANGE_LAYOUT_WITH_MM,
+        payload: payload,
+      });
+    };
+  };
+export const setSliderAction = (payload) => {
+    return (dispatch) => {
+      dispatch({
+        type: Actions.SET_SLIDER_VALUE,
+        payload: payload,
+      });
+    };
+  };
+export const setSliderAction1 = (payload) => {
+    return (dispatch) => {
+      dispatch({
+        type: Actions.SET_SLIDER_VALUE1,
+        payload: payload,
+      });
+    };
+  };
+export const setSliderAction2 = (payload) => {
+    return (dispatch) => {
+      dispatch({
+        type: Actions.SET_SLIDER_VALUE2,
+        payload: payload,
+      });
+    };
+  };
 
 
 

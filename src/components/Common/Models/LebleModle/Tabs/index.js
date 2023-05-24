@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box } from "@mui/material";
 import { Tab } from "@mui/material";
 import { TabContext } from "@mui/lab";
@@ -6,11 +6,72 @@ import { TabList } from "@mui/lab";
 import { TabPanel } from "@mui/lab";
 import Accrodion from "../Accordion";
 import SelectBox from "../../../inputFields/selectBox";
+import Slider from "@mui/material/Slider";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import {
+  setQuerformat_radio_layout,
+  setHochformat_radio_layout,
+  changeLayoutwithMm,
+  setSliderAction,
+  setSliderAction1,
+  setSliderAction2
+} from "../../../../../store/actions/Preview";
+import { useDispatch } from "react-redux";
 const Index = () => {
-  const [value, setValue] = React.useState("1");
+  const dispatch = useDispatch();
+  const [value, setValue] = useState("1");
+  const [selectedOption, setSelectedOption] = useState("option1");
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+  const handleChangeMM = (event) => {
+    const value = event.target.value;
+    dispatch(changeLayoutwithMm(value));
+  };
+
+  const [age, setAge] = useState("");
+  const [open, setOpen] = useState(false);
+
+  const HandleChange = (event) => {
+    setAge(event.target.value);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleQuerformatLayout = (e) => {
+    dispatch(setQuerformat_radio_layout(false));
+  };
+
+  const handleHochformatLayout = (e) => {
+    dispatch(setHochformat_radio_layout(true));
+  };
+  const handleOptionChange = (event) => {
+    setSelectedOption(event.target.value);
+  };
+  const handleSliderChange = (e) => {
+    const value = e.target.value;
+    dispatch(setSliderAction(value))
+    console.log("slider value", value);
+  };
+  const handleSliderChange1 = (e) => {
+    const value = e.target.value;
+    dispatch(setSliderAction1(value))
+    console.log("slider value", value);
+  };
+  const handleSliderChange2 = (e) => {
+    const value = e.target.value;
+    dispatch(setSliderAction2(value))
+    console.log("slider value", value);
   };
 
   return (
@@ -34,7 +95,7 @@ const Index = () => {
           </div>
         </TabPanel>
         <TabPanel value="2">
-          <div className="text-start"   style={{ height: "550px" }} >
+          <div className="text-start" style={{ height: "550px" }}>
             <div className="border-bottom ">
               <p>Layout Einstellungen</p>
               <div className="form-check">
@@ -43,6 +104,8 @@ const Index = () => {
                   type="radio"
                   name="flexRadioDefault"
                   id="flexRadioDefault1"
+                  onChange={handleQuerformatLayout}
+                  defaultChecked={true}
                 />
                 <label className="form-check-label" for="flexRadioDefault1">
                   Querformat
@@ -54,7 +117,7 @@ const Index = () => {
                   type="radio"
                   name="flexRadioDefault"
                   id="flexRadioDefault2"
-                  checked
+                  onChange={handleHochformatLayout}
                 />
                 <label className="form-check-label" for="flexRadioDefault2">
                   Hochformat
@@ -68,19 +131,31 @@ const Index = () => {
                   type="radio"
                   name="RadioDefault"
                   id="flexRadioDefault1"
+                  value="option1"
+                  checked={selectedOption === "option1"}
+                  onChange={handleOptionChange}
                 />
                 <label className="form-check-label" for="flexRadioDefault1">
                   Standard Etiketten Layout
                 </label>
               </div>
               <div className="mt-3 mb-3">
-                <SelectBox
-                  options={[
-                    { label: "60mm * 100mm", value: "option1" },
-                    { label: "Option 2", value: "option2" },
-                  ]}
-                  value={"selectedOption"}
-                />
+                <FormControl fullWidth>
+                  <InputLabel id="demo-controlled-open-select-label">
+                    Etikettengrößen
+                  </InputLabel>
+                  <Select
+                    labelId="demo-controlled-open-select-label"
+                    defaultValue={80}
+                    label="Etikettengrößen"
+                    onChange={handleChangeMM}
+                    disabled={selectedOption === "option2"}
+                  >
+                    <MenuItem value={40}> 60mm x 50mm </MenuItem>
+                    <MenuItem value={60}> 60mm x 80mm</MenuItem>
+                    <MenuItem value={80}> 60mm x 100mm</MenuItem>
+                  </Select>
+                </FormControl>
               </div>
             </div>
             <div className="border-bottom mt-5">
@@ -89,7 +164,9 @@ const Index = () => {
                   className="form-check-input"
                   type="radio"
                   name="RadioDefault"
-                  id="flexRadioDefault1"
+                  value="option2"
+                  checked={selectedOption === "option2"}
+                  onChange={handleOptionChange}
                 />
                 <label className="form-check-label" for="flexRadioDefault1">
                   Standard Etiketten Layout
@@ -110,13 +187,41 @@ const Index = () => {
                   </div>
                 </div>
 
-                <SelectBox
+                <FormControl fullWidth>
+                  <InputLabel id="demo-controlled-open-select-label">
+                    Gespeicherte Vorlage
+                  </InputLabel>
+                  <Select
+                    labelId="demo-multiple-checkbox-label"
+                    id="demo-controlled-open-select"
+                    open={open}
+                    onClose={handleClose}
+                    onOpen={handleOpen}
+                    // value={age}
+                    defaultValue={10}
+                    label="Gespeicherte Vorlage"
+                    onChange={handleChange}
+                    disabled={selectedOption === "option1"}
+                  >
+                    <MenuItem value={10}>Standard Layout</MenuItem>
+                    <MenuItem value={20}> Layout 2</MenuItem>
+                    <MenuItem value={30}>New Layout Tina</MenuItem>
+                    <MenuItem value={30}>New Layout Tina</MenuItem>
+                    <MenuItem value={30}>New Layout Tina</MenuItem>
+                    <MenuItem value={30}>New Layout Tina</MenuItem>
+                    <MenuItem value={30}>New Layout Tina</MenuItem>
+                    <MenuItem value={30}>New Layout Tina</MenuItem>
+                    <MenuItem value={30}>New Layout Tina</MenuItem>
+                    <MenuItem value={30}>New Layout Tina</MenuItem>
+                  </Select>
+                </FormControl>
+                {/* <SelectBox
                   options={[
                     { label: "60mm * 100mm", value: "option1" },
                     { label: "Option 2", value: "option2" },
                   ]}
                   value={"selectedOption"}
-                />
+                /> */}
               </div>
             </div>
             <div className="d-flex flex-column gap-4 mt-5">
@@ -124,36 +229,42 @@ const Index = () => {
                 <label for="customRange2" className="form-label">
                   Breite Nährwerttabelle
                 </label>
-                <input
-                  type="range"
-                  className="form-range"
-                  min="3"
-                  max="5"
-                  id="customRange2"
+                <Slider
+                  defaultValue={50}
+                  aria-label="Default"
+                  valueLabelDisplay="auto"
+                  min={10}
+                  max={100}
+                  onChange={handleSliderChange}
                 />
               </div>
               <div>
                 <label for="customRange2" className="form-label">
                   Breite Etikett
                 </label>
-                <input
-                  type="range"
-                  className="form-range"
-                  min="0"
-                  max="5"
-                  id="customRange2"
+                <Slider
+                  defaultValue={30}
+                  aria-label="Default"
+                  valueLabelDisplay="auto"
+                  min={10}
+                  max={100}
+                  onChange={handleSliderChange1}
+
                 />
               </div>
               <div>
                 <label for="customRange2" className="form-label">
                   Höhe Etikett
                 </label>
-                <input
-                  type="range"
-                  className="form-range"
-                  min="0"
-                  max="5"
-                  id="customRange2"
+
+                <Slider
+                  defaultValue={50}
+                  aria-label="Default"
+                  valueLabelDisplay="auto"
+                  min={70}
+                  max={200}
+                  onChange={handleSliderChange2}
+
                 />
               </div>
             </div>
